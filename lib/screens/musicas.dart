@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:jukebox_controller/componentes/centered_message.dart';
 import 'package:jukebox_controller/componentes/drawer.dart';
+import 'package:jukebox_controller/componentes/progress.dart';
+import 'package:jukebox_controller/http/web.clients/musicas_webclient.dart';
+import 'package:jukebox_controller/models/artista.dart';
+import 'package:jukebox_controller/screens/lista_musicas.dart';
 
 class Musicas extends StatelessWidget {
-
   static const String routeName = '/musicas';
+  final MusicasWebClient _webClientMusicas = MusicasWebClient();
 
   @override
   Widget build(BuildContext context) {
@@ -12,33 +17,78 @@ class Musicas extends StatelessWidget {
           title: Text("Músicas"),
         ),
         drawer: AppDrawer(),
-        body: _buildGrid()
-    );
+        body: FutureBuilder<List<Artista>>(
+          future: _webClientMusicas.retornaArtistas(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                break;
+              case ConnectionState.waiting:
+                return Progress();
+                break;
+              case ConnectionState.active:
+                break;
+              case ConnectionState.done:
+                if (snapshot.hasData) {
+                  final List<Artista> artistas = snapshot.data;
+                  if (artistas.isNotEmpty) {
+                    return GridView.builder(
+                        itemCount: snapshot.data.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4),
+                        padding: const EdgeInsets.all(4),
+                        itemBuilder: (context, index) {
+                          final Artista artista = artistas[index];
+                          return _BuildGridTileList(artista, onClick: () {
+                            Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => ListaMusicas(artista)
+                                )
+                            );
+                          });
+                        });
+                  }
+                }
+                return CenteredMessage(
+                  'No transactions found',
+                  icon: Icons.warning,
+                );
+                break;
+            }
+
+            return CenteredMessage('Unknown error');
+          },
+        ));
   }
 }
 
-Widget _buildGrid() => GridView.extent(
-    maxCrossAxisExtent: 150,
-    padding: const EdgeInsets.all(4),
-    mainAxisSpacing: 4,
-    crossAxisSpacing: 4,
-    children: _buildGridTileList(6));
+class _BuildGridTileList extends StatelessWidget {
+  final Artista artista;
+  final Function onClick;
 
-List<Container> _buildGridTileList(int count) => List.generate(
-    count, (i) => Container(
-    decoration: BoxDecoration(
-        image: DecorationImage(
-            fit: BoxFit.cover,
-            image: NetworkImage('https://i.pinimg.com/originals/0c/96/b1/0c96b19dc89ffdaa7ff737cfc04a095f.png')
+  _BuildGridTileList(this.artista, {@required this.onClick});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: () => onClick(),
+        child: new Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image:
+                    NetworkImage('http://192.168.15.29:8000/' + artista.capa))),
+            alignment: Alignment.bottomCenter,
+            // This aligns the child of the container
+            child: Padding(
+                padding: EdgeInsets.only(bottom: 10.0),
+                //some spacing to the child from bottom
+                child: Text(artista.nome,
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold)
+                )
+            )
         )
-    ),
-    alignment: Alignment.bottomCenter, // This aligns the child of the container
-    child: Padding(
-        padding: EdgeInsets.only(bottom: 10.0), //some spacing to the child from bottom
-        child: Text('Hello', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
-    )
-)
-
-
-
-);
+    );
+  }
+}
