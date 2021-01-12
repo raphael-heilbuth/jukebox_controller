@@ -95,8 +95,8 @@ class _ListaMusicasState extends State<ListaMusicas> {
                 }
               }
               return CenteredMessage(
-                'No transactions found',
-                icon: Icons.warning,
+                'Nenhuma musica para esse artista',
+                icon: Icons.music_off,
               );
               break;
           }

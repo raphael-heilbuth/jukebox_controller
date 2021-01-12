@@ -9,7 +9,7 @@ class Musica {
 
   Musica.fromJson(Map<String, dynamic> json) :
         nome = json['NomeMusica'],
-        duracao = json['Duracao'];
+        duracao = json['Duracao'] + .0;
 
   Map<String, dynamic> toJson() =>
       {
