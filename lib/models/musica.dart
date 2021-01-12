@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class Musica {
   final String nome;
   final double duracao;

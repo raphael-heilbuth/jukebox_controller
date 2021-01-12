@@ -32,7 +32,7 @@ class Controles extends StatelessWidget {
                     RawMaterialButton(
                       onPressed: () => {
                         FutureBuilder<Success>(
-                            future: _webClientController.volumeMais(),
+                            future: _webClientController.volumeMenos(),
                             builder: (context, snapshot) {
                               switch (snapshot.connectionState) {
                                 case ConnectionState.none:
@@ -43,21 +43,7 @@ class Controles extends StatelessWidget {
                                 case ConnectionState.active:
                                   break;
                                 case ConnectionState.done:
-                                  if (snapshot.hasData) {
-                                    final snackBar = SnackBar(
-                                      content: Text('Yay! A SnackBar!'),
-                                      action: SnackBarAction(
-                                        label: 'Undo',
-                                        onPressed: () {
-                                          // Some code to undo the change.
-                                        },
-                                      ),
-                                    );
-
-                                    // Find the Scaffold in the widget tree and use
-                                    // it to show a SnackBar.
-                                    Scaffold.of(context).showSnackBar(snackBar);
-                                  }
+                                  if (snapshot.hasData) {}
                                   return CenteredMessage(
                                     'No transactions found',
                                     icon: Icons.warning,
@@ -71,17 +57,12 @@ class Controles extends StatelessWidget {
                       elevation: 2.0,
                       fillColor: Colors.white,
                       child: Icon(
-                        Icons.remove,
+                        Icons.volume_down,
                         size: 35.0,
                       ),
                       padding: EdgeInsets.all(15.0),
                       shape: CircleBorder(),
                     ),
-                    Text('10',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 20.0)),
                     RawMaterialButton(
                       onPressed: () => {
                         FutureBuilder<Success>(
@@ -96,21 +77,7 @@ class Controles extends StatelessWidget {
                                 case ConnectionState.active:
                                   break;
                                 case ConnectionState.done:
-                                  if (snapshot.hasData) {
-                                    final snackBar = SnackBar(
-                                      content: Text('Yay! A SnackBar!'),
-                                      action: SnackBarAction(
-                                        label: 'Undo',
-                                        onPressed: () {
-                                          // Some code to undo the change.
-                                        },
-                                      ),
-                                    );
-
-                                    // Find the Scaffold in the widget tree and use
-                                    // it to show a SnackBar.
-                                    Scaffold.of(context).showSnackBar(snackBar);
-                                  }
+                                  if (snapshot.hasData) {}
                                   return CenteredMessage(
                                     'No transactions found',
                                     icon: Icons.warning,
@@ -124,7 +91,7 @@ class Controles extends StatelessWidget {
                       elevation: 2.0,
                       fillColor: Colors.white,
                       child: Icon(
-                        Icons.add,
+                        Icons.volume_up,
                         size: 35.0,
                       ),
                       padding: EdgeInsets.all(15.0),
@@ -136,7 +103,107 @@ class Controles extends StatelessWidget {
             ],
           ),
         ),
+        CardReproducao(webClientController: _webClientController),
       ]),
+    );
+  }
+}
+
+class CardReproducao extends StatelessWidget {
+  const CardReproducao({
+    Key key,
+    @required ControlesWebClient webClientController,
+  }) : _webClientController = webClientController, super(key: key);
+
+  final ControlesWebClient _webClientController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ListTile(
+            title: const Text('Reprodução'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                RawMaterialButton(
+                  onPressed: () => {
+                    FutureBuilder<Success>(
+                        future: _webClientController.volumeMenos(),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.none:
+                              break;
+                            case ConnectionState.waiting:
+                              return Progress();
+                              break;
+                            case ConnectionState.active:
+                              break;
+                            case ConnectionState.done:
+                              if (snapshot.hasData) {}
+                              return CenteredMessage(
+                                'No transactions found',
+                                icon: Icons.warning,
+                              );
+                              break;
+                          }
+
+                          return CenteredMessage('Unknown error');
+                        })
+                  },
+                  elevation: 2.0,
+                  fillColor: Colors.white,
+                  child: Icon(
+                    Icons.pause,
+                    size: 35.0,
+                  ),
+                  padding: EdgeInsets.all(15.0),
+                  shape: CircleBorder(),
+                ),
+                RawMaterialButton(
+                  onPressed: () => {
+                    FutureBuilder<Success>(
+                        future: _webClientController.volumeMais(),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.none:
+                              break;
+                            case ConnectionState.waiting:
+                              return Progress();
+                              break;
+                            case ConnectionState.active:
+                              break;
+                            case ConnectionState.done:
+                              if (snapshot.hasData) {}
+                              return CenteredMessage(
+                                'No transactions found',
+                                icon: Icons.warning,
+                              );
+                              break;
+                          }
+
+                          return CenteredMessage('Unknown error');
+                        })
+                  },
+                  elevation: 2.0,
+                  fillColor: Colors.white,
+                  child: Icon(
+                    Icons.skip_next,
+                    size: 35.0,
+                  ),
+                  padding: EdgeInsets.all(15.0),
+                  shape: CircleBorder(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

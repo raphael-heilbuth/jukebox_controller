@@ -83,9 +83,28 @@ class _BuildGridTileList extends StatelessWidget {
             child: Padding(
                 padding: EdgeInsets.only(bottom: 10.0),
                 //some spacing to the child from bottom
-                child: Text(artista.nome,
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold)
+                child: Stack(
+                  children: <Widget>[
+                    // Stroked text as border.
+                    Text(
+                      artista.nome,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        foreground: Paint()
+                          ..style = PaintingStyle.stroke
+                          ..strokeWidth = 2
+                          ..color = Colors.black54,
+                      ),
+                    ),
+                    // Solid text as fill.
+                    Text(
+                      artista.nome,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 )
             )
         )
