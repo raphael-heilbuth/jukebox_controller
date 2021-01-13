@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jukebox_controller/componentes/centered_message.dart';
 import 'package:jukebox_controller/componentes/drawer.dart';
+import 'package:jukebox_controller/componentes/floating_button.dart';
 import 'package:jukebox_controller/componentes/progress.dart';
 import 'package:jukebox_controller/http/web.clients/musicas_webclient.dart';
 import 'package:jukebox_controller/models/artista.dart';
+import 'package:jukebox_controller/routes/routes.dart';
 import 'package:jukebox_controller/screens/lista_musicas.dart';
 
 class Musicas extends StatelessWidget {
@@ -16,6 +18,7 @@ class Musicas extends StatelessWidget {
       appBar: AppBar(
         title: Text("Músicas"),
       ),
+      floatingActionButton: FloatingButton(onClick: () {Navigator.pushReplacementNamed(context, Routes.creditos);}),
       drawer: AppDrawer(),
       body: FutureBuilder<List<Artista>>(
         future: _webClientMusicas.retornaArtistas(),

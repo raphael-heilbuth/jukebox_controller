@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:jukebox_controller/componentes/centered_message.dart';
 import 'package:jukebox_controller/componentes/drawer.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:jukebox_controller/componentes/floating_button.dart';
 import 'package:jukebox_controller/componentes/progress.dart';
 import 'package:jukebox_controller/http/web.clients/dashboard_webclient.dart';
 import 'package:jukebox_controller/models/dashboard.dart';
+import 'package:jukebox_controller/routes/routes.dart';
 import 'package:jukebox_controller/screens/musicas.dart';
 
 class Dashboard extends StatelessWidget {
@@ -17,6 +19,7 @@ class Dashboard extends StatelessWidget {
         appBar: AppBar(
           title: Text("Dashboard"),
         ),
+        floatingActionButton: FloatingButton(onClick: () {Navigator.pushReplacementNamed(context, Routes.creditos);}),
         drawer: AppDrawer(),
         body: FutureBuilder<DadosDashboard>(
           future: _webClientDashboard.retornaDadosDashboard(),
