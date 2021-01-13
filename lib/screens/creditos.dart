@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:jukebox_controller/componentes/centered_message.dart';
 import 'package:jukebox_controller/componentes/drawer.dart';
-import 'package:jukebox_controller/componentes/progress.dart';
+import 'package:jukebox_controller/componentes/response_dialog.dart';
 import 'package:jukebox_controller/http/web.clients/controles_webclient.dart';
-import 'package:jukebox_controller/models/success.dart';
+import 'package:intl/intl.dart';
 
 class Creditos extends StatefulWidget {
   static const String routeName = '/creditos';
@@ -14,10 +15,11 @@ class Creditos extends StatefulWidget {
 
 class _CreditosState extends State<Creditos> {
   final ControlesWebClient _webClientController = ControlesWebClient();
-
+  final oCcy = new NumberFormat("#,##0.00", "pt_BR");
   int qtdCredito = 0;
   double valorCredito = 0.50;
   double valorPagar = 0;
+  bool _sending = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +45,12 @@ class _CreditosState extends State<Creditos> {
                         icon: new Icon(Icons.attach_money),
                         color: Colors.greenAccent,
                         onPressed: () {
-                          _webClientController.addCredito(qtdCredito).then((result) {
-                            setState(() {
-                              qtdCredito = 0;
-                              valorPagar = valorCredito * qtdCredito;
-                            });
-                          });
-                        }
-                        ),
+                          _addCredito(
+                            _webClientController,
+                            qtdCredito,
+                            context,
+                          );
+                        }),
                   ],
                 ),
               ),
@@ -62,9 +62,10 @@ class _CreditosState extends State<Creditos> {
                     RawMaterialButton(
                       onPressed: () => {
                         setState(() {
-                        qtdCredito--;
-                        valorPagar = valorCredito * qtdCredito;
-                      })},
+                          qtdCredito--;
+                          valorPagar = valorCredito * qtdCredito;
+                        })
+                      },
                       elevation: 2.0,
                       fillColor: Colors.white,
                       child: Icon(
@@ -73,15 +74,17 @@ class _CreditosState extends State<Creditos> {
                       padding: EdgeInsets.all(15.0),
                       shape: CircleBorder(),
                     ),
-                    Text(qtdCredito.toString(),
-                      style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                    Text(
+                      qtdCredito.toString(),
+                      style:
+                          TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                     ),
                     RawMaterialButton(
                       onPressed: () => {
-                      setState(() {
-                        qtdCredito++;
-                        valorPagar = valorCredito * qtdCredito;
-                      })
+                        setState(() {
+                          qtdCredito++;
+                          valorPagar = valorCredito * qtdCredito;
+                        })
                       },
                       elevation: 2.0,
                       fillColor: Colors.white,
@@ -96,15 +99,20 @@ class _CreditosState extends State<Creditos> {
               ),
               Divider(),
               Padding(
-                padding: const EdgeInsets.only(right: 20.0, left: 20.0, bottom: 20.0),
+                padding: const EdgeInsets.only(
+                    right: 20.0, left: 20.0, bottom: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Total',
-                      style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                    Text(
+                      'Total',
+                      style:
+                          TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                     ),
-                    Text('R\$ ' + valorPagar.toString(),
-                      style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                    Text(
+                      'R\$ ' + oCcy.format(valorPagar),
+                      style:
+                          TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -113,6 +121,58 @@ class _CreditosState extends State<Creditos> {
           ),
         ),
       ]),
+    );
+  }
+
+  Future<void> _addCredito(
+    ControlesWebClient webClient,
+    int creditos,
+    BuildContext context,
+  ) async {
+    setState(() => _sending = true);
+    final createCredito = await webClient
+        .addCredito(creditos)
+        .catchError(
+          (e) => _showFailureMessage(
+            context,
+            message: 'O tempo para inserir crédito demorou muito e não foi salvo',
+          ),
+          test: (e) => e is TimeoutException,
+        )
+        .catchError(
+          (error) => _showFailureMessage(context, message: error.message),
+          test: (error) => error is HttpException,
+        )
+        .catchError(
+          (error) => _showFailureMessage(context),
+          test: (error) => error is Exception,
+        )
+        .whenComplete(() => setState(() => _sending = false));
+
+    if (createCredito != null) {
+      if (createCredito.sucesso) {
+        await showDialog(
+          context: context,
+          builder: (_) => SuccessDialog('Crédito adicionado'),
+        );
+
+        setState(() {
+          qtdCredito = 0;
+          valorPagar = valorCredito * qtdCredito;
+        });
+      } else {
+        _showFailureMessage(context, message: 'Erro ao inserir crédito');
+      }
+    }
+  }
+
+  void _showFailureMessage(
+    BuildContext context, {
+    String message = 'Erro desconhecido',
+  }) {
+    showDialog(
+      context: context,
+      builder: (_) => FailureDialog(message),
     );
   }
 }
