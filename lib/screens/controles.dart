@@ -186,7 +186,7 @@ class CardReproducao extends StatelessWidget {
                 RawMaterialButton(
                   onPressed: () => {
                     FutureBuilder<Success>(
-                        future: _webClientController.volumeMais(),
+                        future: _webClientController.proximaMusica(),
                         builder: (context, snapshot) {
                           switch (snapshot.connectionState) {
                             case ConnectionState.none:

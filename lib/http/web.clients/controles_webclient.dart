@@ -23,6 +23,12 @@ class ControlesWebClient {
     return Success.fromJson(jsonDecode(response.body));
   }
 
+  Future<Success> proximaMusica() async {
+    final Response response = await client.get(baseUrl + 'proxima').timeout(Duration(seconds: 5));
+
+    return Success.fromJson(jsonDecode(response.body));
+  }
+
   Future<Success> addCredito(qtd) async {
     final String qtdCreditos = jsonEncode({'QtdCredito': qtd});
 
