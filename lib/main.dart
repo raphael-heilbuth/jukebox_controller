@@ -25,6 +25,7 @@ class JukeBoxControlApp extends StatelessWidget {
         Routes.relatorios: (context) => Relatorios(),
         Routes.configuracoes: (context) => Configuracoes(),
       },
+        debugShowCheckedModeBanner: false
     );
   }
 }
