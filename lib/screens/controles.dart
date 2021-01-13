@@ -5,223 +5,240 @@ import 'package:jukebox_controller/componentes/progress.dart';
 import 'package:jukebox_controller/http/web.clients/controles_webclient.dart';
 import 'package:jukebox_controller/models/success.dart';
 
-class Controles extends StatelessWidget {
+class Controles extends StatefulWidget {
   static const String routeName = '/controles';
+
+  @override
+  _ControlesState createState() => _ControlesState();
+}
+
+class _ControlesState extends State<Controles> {
   final ControlesWebClient _webClientController = ControlesWebClient();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text("Controles"),
       ),
       drawer: AppDrawer(),
       body: ListView(children: [
-        CardVolume(webClientController: _webClientController),
-        CardReproducao(webClientController: _webClientController),
+        Card(
+          elevation: 2.0,
+          shadowColor: Color(0x802196F3),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              ListTile(
+                title: const Text('Volume'),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    RawMaterialButton(
+                      onPressed: () {
+                        _volumeMenos(
+                          _webClientController,
+                          context,
+                        );
+                      },
+                      elevation: 2.0,
+                      fillColor: Colors.white,
+                      child: Icon(
+                        Icons.volume_down,
+                        size: 35.0,
+                      ),
+                      padding: EdgeInsets.all(15.0),
+                      shape: CircleBorder(),
+                    ),
+                    RawMaterialButton(
+                      onPressed: () {
+                        _volumeMais(
+                          _webClientController,
+                          context,
+                        );
+                      },
+                      elevation: 2.0,
+                      fillColor: Colors.white,
+                      child: Icon(
+                        Icons.volume_up,
+                        size: 35.0,
+                      ),
+                      padding: EdgeInsets.all(15.0),
+                      shape: CircleBorder(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Card(
+          elevation: 2.0,
+          shadowColor: Color(0x802196F3),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              ListTile(
+                title: const Text('Reprodução'),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    RawMaterialButton(
+                      onPressed: () {
+                        _proximaMusica(
+                          _webClientController,
+                          context,
+                        );
+                      },
+                      elevation: 2.0,
+                      fillColor: Colors.white,
+                      child: Icon(
+                        Icons.pause,
+                        size: 35.0,
+                      ),
+                      padding: EdgeInsets.all(15.0),
+                      shape: CircleBorder(),
+                    ),
+                    RawMaterialButton(
+                      onPressed: () => {
+                        FutureBuilder<Success>(
+                            future: _webClientController.proximaMusica(),
+                            builder: (context, snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.none:
+                                  break;
+                                case ConnectionState.waiting:
+                                  return Progress();
+                                  break;
+                                case ConnectionState.active:
+                                  break;
+                                case ConnectionState.done:
+                                  if (snapshot.hasData) {}
+                                  return CenteredMessage(
+                                    'No transactions found',
+                                    icon: Icons.warning,
+                                  );
+                                  break;
+                              }
+
+                              return CenteredMessage('Unknown error');
+                            })
+                      },
+                      elevation: 2.0,
+                      fillColor: Colors.white,
+                      child: Icon(
+                        Icons.skip_next,
+                        size: 35.0,
+                      ),
+                      padding: EdgeInsets.all(15.0),
+                      shape: CircleBorder(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ]),
     );
   }
-}
 
-class CardVolume extends StatelessWidget {
-  const CardVolume({
-    Key key,
-    @required ControlesWebClient webClientController,
-  }) : _webClientController = webClientController, super(key: key);
-
-  final ControlesWebClient _webClientController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2.0,
-      shadowColor: Color(0x802196F3),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          ListTile(
-            title: const Text('Volume'),
+  Future<void> _volumeMais(
+    ControlesWebClient webClient,
+    BuildContext context,
+  ) async {
+    final createCredito = await webClient
+        .volumeMais()
+        .catchError(
+          (e) => _showSnackBar(
+            context,
+            message:
+                'O tempo para aumentar o volume demorou muito. Operação cancelada!',
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                RawMaterialButton(
-                  onPressed: () => {
-                    FutureBuilder<Success>(
-                        future: _webClientController.volumeMenos(),
-                        builder: (context, snapshot) {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.none:
-                              break;
-                            case ConnectionState.waiting:
-                              return Progress();
-                              break;
-                            case ConnectionState.active:
-                              break;
-                            case ConnectionState.done:
-                              if (snapshot.hasData) {}
-                              return CenteredMessage(
-                                'No transactions found',
-                                icon: Icons.warning,
-                              );
-                              break;
-                          }
+        )
+        .catchError(
+          (error) => _showSnackBar(context, message: error.message),
+        )
+        .catchError(
+          (error) => _showSnackBar(context),
+        )
+        .whenComplete(() => {});
 
-                          return CenteredMessage('Unknown error');
-                        })
-                  },
-                  elevation: 2.0,
-                  fillColor: Colors.white,
-                  child: Icon(
-                    Icons.volume_down,
-                    size: 35.0,
-                  ),
-                  padding: EdgeInsets.all(15.0),
-                  shape: CircleBorder(),
-                ),
-                RawMaterialButton(
-                  onPressed: () => {
-                    FutureBuilder<Success>(
-                        future: _webClientController.volumeMais(),
-                        builder: (context, snapshot) {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.none:
-                              break;
-                            case ConnectionState.waiting:
-                              return Progress();
-                              break;
-                            case ConnectionState.active:
-                              break;
-                            case ConnectionState.done:
-                              if (snapshot.hasData) {}
-                              return CenteredMessage(
-                                'No transactions found',
-                                icon: Icons.warning,
-                              );
-                              break;
-                          }
-
-                          return CenteredMessage('Unknown error');
-                        })
-                  },
-                  elevation: 2.0,
-                  fillColor: Colors.white,
-                  child: Icon(
-                    Icons.volume_up,
-                    size: 35.0,
-                  ),
-                  padding: EdgeInsets.all(15.0),
-                  shape: CircleBorder(),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    if (createCredito != null) {
+      if (createCredito.sucesso) {
+        _showSnackBar(context, message: 'Volume aumentado');
+      } else {
+        _showSnackBar(context, message: 'Erro ao aumentar volume');
+      }
+    }
   }
-}
 
-class CardReproducao extends StatelessWidget {
-  const CardReproducao({
-    Key key,
-    @required ControlesWebClient webClientController,
-  }) : _webClientController = webClientController, super(key: key);
+  Future<void> _volumeMenos(
+    ControlesWebClient webClient,
+    BuildContext context,
+  ) async {
+    final createCredito = await webClient
+        .volumeMenos()
+        .catchError(
+          (e) => _showSnackBar(context,
+              message:
+                  'O tempo para diminuir o volume demorou muito. Operação cancelada!'),
+        )
+        .catchError(
+          (error) => _showSnackBar(context, message: error.message),
+        )
+        .catchError(
+          (error) => _showSnackBar(context),
+        )
+        .whenComplete(() => {});
 
-  final ControlesWebClient _webClientController;
+    if (createCredito != null) {
+      if (createCredito.sucesso) {
+        _showSnackBar(context, message: 'Volume diminuido');
+      } else {
+        _showSnackBar(context, message: 'Erro ao diminuir volume');
+      }
+    }
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2.0,
-      shadowColor: Color(0x802196F3),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          ListTile(
-            title: const Text('Reprodução'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                RawMaterialButton(
-                  onPressed: () => {
-                    FutureBuilder<Success>(
-                        future: _webClientController.volumeMenos(),
-                        builder: (context, snapshot) {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.none:
-                              break;
-                            case ConnectionState.waiting:
-                              return Progress();
-                              break;
-                            case ConnectionState.active:
-                              break;
-                            case ConnectionState.done:
-                              if (snapshot.hasData) {}
-                              return CenteredMessage(
-                                'No transactions found',
-                                icon: Icons.warning,
-                              );
-                              break;
-                          }
+  Future<void> _proximaMusica(
+    ControlesWebClient webClient,
+    BuildContext context,
+  ) async {
+    final createCredito = await webClient
+        .volumeMenos()
+        .catchError(
+          (e) => _showSnackBar(context,
+              message:
+                  'O tempo para pular a musica demorou muito. Operação cancelada!'),
+        )
+        .catchError(
+          (error) => _showSnackBar(context, message: error.message),
+        )
+        .catchError(
+          (error) => _showSnackBar(context),
+        )
+        .whenComplete(() => {});
 
-                          return CenteredMessage('Unknown error');
-                        })
-                  },
-                  elevation: 2.0,
-                  fillColor: Colors.white,
-                  child: Icon(
-                    Icons.pause,
-                    size: 35.0,
-                  ),
-                  padding: EdgeInsets.all(15.0),
-                  shape: CircleBorder(),
-                ),
-                RawMaterialButton(
-                  onPressed: () => {
-                    FutureBuilder<Success>(
-                        future: _webClientController.proximaMusica(),
-                        builder: (context, snapshot) {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.none:
-                              break;
-                            case ConnectionState.waiting:
-                              return Progress();
-                              break;
-                            case ConnectionState.active:
-                              break;
-                            case ConnectionState.done:
-                              if (snapshot.hasData) {}
-                              return CenteredMessage(
-                                'No transactions found',
-                                icon: Icons.warning,
-                              );
-                              break;
-                          }
+    if (createCredito != null) {
+      if (createCredito.sucesso) {
+        _showSnackBar(context, message: 'Próxima música');
+      } else {
+        _showSnackBar(context, message: 'Erro ao pular música');
+      }
+    }
+  }
 
-                          return CenteredMessage('Unknown error');
-                        })
-                  },
-                  elevation: 2.0,
-                  fillColor: Colors.white,
-                  child: Icon(
-                    Icons.skip_next,
-                    size: 35.0,
-                  ),
-                  padding: EdgeInsets.all(15.0),
-                  shape: CircleBorder(),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+  void _showSnackBar(BuildContext context, {String message = 'Error'}) {
+    scaffoldKey.currentState
+        .showSnackBar(new SnackBar(content: new Text(message)));
   }
 }
