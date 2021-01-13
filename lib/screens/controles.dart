@@ -35,6 +35,8 @@ class CardVolume extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 2.0,
+      shadowColor: Color(0x802196F3),
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
@@ -134,6 +136,8 @@ class CardReproducao extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 2.0,
+      shadowColor: Color(0x802196F3),
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [

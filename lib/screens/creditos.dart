@@ -30,6 +30,8 @@ class _CreditosState extends State<Creditos> {
       drawer: AppDrawer(),
       body: ListView(children: [
         Card(
+          elevation: 2.0,
+          shadowColor: Color(0x802196F3),
           clipBehavior: Clip.antiAlias,
           child: Column(
             children: [
