@@ -17,94 +17,108 @@ class Controles extends StatelessWidget {
       ),
       drawer: AppDrawer(),
       body: ListView(children: [
-        Card(
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            children: [
-              ListTile(
-                title: const Text('Volume'),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    RawMaterialButton(
-                      onPressed: () => {
-                        FutureBuilder<Success>(
-                            future: _webClientController.volumeMenos(),
-                            builder: (context, snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.none:
-                                  break;
-                                case ConnectionState.waiting:
-                                  return Progress();
-                                  break;
-                                case ConnectionState.active:
-                                  break;
-                                case ConnectionState.done:
-                                  if (snapshot.hasData) {}
-                                  return CenteredMessage(
-                                    'No transactions found',
-                                    icon: Icons.warning,
-                                  );
-                                  break;
-                              }
-
-                              return CenteredMessage('Unknown error');
-                            })
-                      },
-                      elevation: 2.0,
-                      fillColor: Colors.white,
-                      child: Icon(
-                        Icons.volume_down,
-                        size: 35.0,
-                      ),
-                      padding: EdgeInsets.all(15.0),
-                      shape: CircleBorder(),
-                    ),
-                    RawMaterialButton(
-                      onPressed: () => {
-                        FutureBuilder<Success>(
-                            future: _webClientController.volumeMais(),
-                            builder: (context, snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.none:
-                                  break;
-                                case ConnectionState.waiting:
-                                  return Progress();
-                                  break;
-                                case ConnectionState.active:
-                                  break;
-                                case ConnectionState.done:
-                                  if (snapshot.hasData) {}
-                                  return CenteredMessage(
-                                    'No transactions found',
-                                    icon: Icons.warning,
-                                  );
-                                  break;
-                              }
-
-                              return CenteredMessage('Unknown error');
-                            })
-                      },
-                      elevation: 2.0,
-                      fillColor: Colors.white,
-                      child: Icon(
-                        Icons.volume_up,
-                        size: 35.0,
-                      ),
-                      padding: EdgeInsets.all(15.0),
-                      shape: CircleBorder(),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+        CardVolume(webClientController: _webClientController),
         CardReproducao(webClientController: _webClientController),
       ]),
+    );
+  }
+}
+
+class CardVolume extends StatelessWidget {
+  const CardVolume({
+    Key key,
+    @required ControlesWebClient webClientController,
+  }) : _webClientController = webClientController, super(key: key);
+
+  final ControlesWebClient _webClientController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ListTile(
+            title: const Text('Volume'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                RawMaterialButton(
+                  onPressed: () => {
+                    FutureBuilder<Success>(
+                        future: _webClientController.volumeMenos(),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.none:
+                              break;
+                            case ConnectionState.waiting:
+                              return Progress();
+                              break;
+                            case ConnectionState.active:
+                              break;
+                            case ConnectionState.done:
+                              if (snapshot.hasData) {}
+                              return CenteredMessage(
+                                'No transactions found',
+                                icon: Icons.warning,
+                              );
+                              break;
+                          }
+
+                          return CenteredMessage('Unknown error');
+                        })
+                  },
+                  elevation: 2.0,
+                  fillColor: Colors.white,
+                  child: Icon(
+                    Icons.volume_down,
+                    size: 35.0,
+                  ),
+                  padding: EdgeInsets.all(15.0),
+                  shape: CircleBorder(),
+                ),
+                RawMaterialButton(
+                  onPressed: () => {
+                    FutureBuilder<Success>(
+                        future: _webClientController.volumeMais(),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.none:
+                              break;
+                            case ConnectionState.waiting:
+                              return Progress();
+                              break;
+                            case ConnectionState.active:
+                              break;
+                            case ConnectionState.done:
+                              if (snapshot.hasData) {}
+                              return CenteredMessage(
+                                'No transactions found',
+                                icon: Icons.warning,
+                              );
+                              break;
+                          }
+
+                          return CenteredMessage('Unknown error');
+                        })
+                  },
+                  elevation: 2.0,
+                  fillColor: Colors.white,
+                  child: Icon(
+                    Icons.volume_up,
+                    size: 35.0,
+                  ),
+                  padding: EdgeInsets.all(15.0),
+                  shape: CircleBorder(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
