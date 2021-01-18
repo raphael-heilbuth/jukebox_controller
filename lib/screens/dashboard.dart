@@ -88,7 +88,7 @@ class Dashboard extends StatelessWidget {
                                     child: Padding(
                                       padding: const EdgeInsets.all(16.0),
                                       child: Icon(Icons.queue_music_outlined,
-                                          color: Colors.white, size: 30.0),
+                                          color: Colors.white, size: 20.0),
                                     )),
                                 Padding(padding: EdgeInsets.only(bottom: 16.0)),
                                 Text(dashboard.musicasTocadas.toString(),
@@ -113,7 +113,7 @@ class Dashboard extends StatelessWidget {
                                     child: Padding(
                                       padding: EdgeInsets.all(16.0),
                                       child: Icon(Icons.queue_music_sharp,
-                                          color: Colors.white, size: 30.0),
+                                          color: Colors.white, size: 20.0),
                                     )),
                                 Padding(padding: EdgeInsets.only(bottom: 16.0)),
                                 Text(dashboard.totalTocadas.toString(),
