@@ -17,7 +17,7 @@ class Parametros {
 
   Parametros.fromJson(Map<String, dynamic> json) :
         modo = json['modo'],
-        valorCredito = json['valorCredito'],
+        valorCredito = json['valorCredito'] + .0,
         topMusicas = json['topMusicas'],
         randomMusicas = json['randomMusicas'],
         youtubeMusicas = json['youtubeMusicas'],

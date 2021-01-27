@@ -7,7 +7,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="jukebox_controller"
+        android:label="Controle para NodeJukebox"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

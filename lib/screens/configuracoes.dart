@@ -108,7 +108,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             clipBehavior: Clip.antiAlias,
             child: Column(children: [
               ListTile(
-                title: const Text('Volume'),
+                title: const Text('Conexão'),
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -137,7 +137,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             clipBehavior: Clip.antiAlias,
             child: Column(children: [
               ListTile(
-                title: const Text('Volume'),
+                title: const Text('Modo'),
               ),
               Column(
                 children: <Widget>[
@@ -191,8 +191,8 @@ class MyCustomFormState extends State<MyCustomForm> {
                         controller: controllerTextValor,
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value.isEmpty) {
-                            return 'O IP deve ser preenchido';
+                          if ((id == 0) && (value.isEmpty)) {
+                            return 'O valor do crédito deve ser preenchido quando o modo é Ficha';
                           }
                           return null;
                         },
@@ -213,7 +213,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                         keyboardType: TextInputType.numberWithOptions(),
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'O IP deve ser preenchido';
+                            return 'O tempo para tocar musica aleatoria deve ser preenchido';
                           }
                           return null;
                         },
@@ -230,7 +230,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             clipBehavior: Clip.antiAlias,
             child: Column(children: [
               ListTile(
-                title: const Text('Volume'),
+                title: const Text('Opções'),
               ),
               SwitchListTile(
                 title: const Text('Musicas randomicas'),
@@ -239,13 +239,13 @@ class MyCustomFormState extends State<MyCustomForm> {
                 secondary: const FaIcon(FontAwesomeIcons.random),
               ),
               SwitchListTile(
-                title: const Text('Top Musicas'),
+                title: const Text('Top Músicas'),
                 value: _valueTop,
                 onChanged: _onChangedTop,
                 secondary: const FaIcon(FontAwesomeIcons.chevronCircleUp),
               ),
               SwitchListTile(
-                title: const Text('Youtube Musicas'),
+                title: const Text('Youtube Músicas'),
                 value: _valueYoutube,
                 onChanged: _onChangedYoutube,
                 secondary: const FaIcon(FontAwesomeIcons.youtube),
