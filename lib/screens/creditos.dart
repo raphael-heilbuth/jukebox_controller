@@ -19,7 +19,6 @@ class _CreditosState extends State<Creditos> {
   int qtdCredito = 0;
   double valorCredito = 0.50;
   double valorPagar = 0;
-  bool _sending = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,40 +60,102 @@ class _CreditosState extends State<Creditos> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    RawMaterialButton(
-                      onPressed: () => {
-                        setState(() {
-                          qtdCredito--;
-                          valorPagar = valorCredito * qtdCredito;
-                        })
-                      },
-                      elevation: 2.0,
-                      fillColor: Colors.white,
-                      child: Icon(
-                        Icons.remove,
-                      ),
-                      padding: EdgeInsets.all(15.0),
-                      shape: CircleBorder(),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        RawMaterialButton(
+                          onPressed: () => {
+                            setState(() {
+                              qtdCredito -= 5;
+                              valorPagar = valorCredito * qtdCredito;
+                            })
+                          },
+                          elevation: 2.0,
+                          fillColor: Colors.white,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.remove,
+                                size: 10,
+                              ),
+                              Text(
+                                '5',
+                                style:
+                                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          padding: EdgeInsets.all(15.0),
+                          shape: CircleBorder(),
+                          constraints:  BoxConstraints.tight(Size.fromRadius(24)) ,
+                        ),
+                        RawMaterialButton(
+                          onPressed: () => {
+                            setState(() {
+                              qtdCredito--;
+                              valorPagar = valorCredito * qtdCredito;
+                            })
+                          },
+                          elevation: 2.0,
+                          fillColor: Colors.white,
+                          child: Icon(
+                            Icons.remove,
+                          ),
+                          padding: EdgeInsets.all(15.0),
+                          shape: CircleBorder(),
+                        ),
+                      ],
                     ),
                     Text(
                       qtdCredito.toString(),
                       style:
                           TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                     ),
-                    RawMaterialButton(
-                      onPressed: () => {
-                        setState(() {
-                          qtdCredito++;
-                          valorPagar = valorCredito * qtdCredito;
-                        })
-                      },
-                      elevation: 2.0,
-                      fillColor: Colors.white,
-                      child: Icon(
-                        Icons.add,
-                      ),
-                      padding: EdgeInsets.all(15.0),
-                      shape: CircleBorder(),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        RawMaterialButton(
+                          onPressed: () => {
+                            setState(() {
+                              qtdCredito++;
+                              valorPagar = valorCredito * qtdCredito;
+                            })
+                          },
+                          elevation: 2.0,
+                          fillColor: Colors.white,
+                          child: Icon(
+                            Icons.add,
+                          ),
+                          padding: EdgeInsets.all(15.0),
+                          shape: CircleBorder(),
+                        ),
+                        RawMaterialButton(
+                          onPressed: () => {
+                            setState(() {
+                              qtdCredito += 5;
+                              valorPagar = valorCredito * qtdCredito;
+                            })
+                          },
+                          elevation: 2.0,
+                          fillColor: Colors.white,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add,
+                                size: 10,
+                              ),
+                              Text(
+                                '5',
+                                style:
+                                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          padding: EdgeInsets.all(15.0),
+                          shape: CircleBorder(),
+                          constraints:  BoxConstraints.tight(Size.fromRadius(24)) ,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -131,7 +192,6 @@ class _CreditosState extends State<Creditos> {
     int creditos,
     BuildContext context,
   ) async {
-    setState(() => _sending = true);
     final createCredito = await webClient
         .addCredito(creditos)
         .catchError(
@@ -149,7 +209,7 @@ class _CreditosState extends State<Creditos> {
           (error) => _showFailureMessage(context),
           test: (error) => error is Exception,
         )
-        .whenComplete(() => setState(() => _sending = false));
+        .whenComplete(() => setState(() => {}));
 
     if (createCredito != null) {
       if (createCredito.sucesso) {
