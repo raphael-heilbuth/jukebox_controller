@@ -261,9 +261,9 @@ class MyCustomFormState extends State<MyCustomForm> {
                   // otherwise.
                   if (_formKey.currentState.validate()) {
                     // If the form is valid, display a Snackbar.
-                    String ip = (controllerTextIp.text.contains('http:')
+                    String ip = (controllerTextIp.text.contains(':8000')
                         ? controllerTextIp.text
-                        : 'http:\/\/' + controllerTextIp.text + ':8000\/');
+                        : controllerTextIp.text + ':8000\/');
                     sharedPref.writeString("ip", ip);
 
                     Parametros parametro = new Parametros(
@@ -279,13 +279,13 @@ class MyCustomFormState extends State<MyCustomForm> {
                         .then((retorno) => {
                               if (retorno.sucesso)
                                 {
-                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: Text(
                                           'Configurações salvas com sucesso!')))
                                 }
                               else
                                 {
-                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: Text(
                                           'Não foi possivel salvar as configurações'),
                                       backgroundColor: Colors.red))

@@ -13,33 +13,37 @@ class ControlesWebClient {
   }
 
   Future<Success> volumeMais() async {
-    final Response response = await client.post(await sharedPref.readString('ip') + 'volumeMais').timeout(Duration(seconds: 5));
+    final uri = new Uri.http(await sharedPref.readString('ip'), '/volumeMais');
+    final Response response = await client.post(uri).timeout(Duration(seconds: 5));
 
     return Success.fromJson(jsonDecode(response.body));
   }
 
   Future<Success> volumeMenos() async {
-    final Response response = await client.post(await sharedPref.readString('ip') + 'volumeMenos').timeout(Duration(seconds: 5));
+    final uri = new Uri.http(await sharedPref.readString('ip'), '/volumeMenos');
+    final Response response = await client.post(uri).timeout(Duration(seconds: 5));
 
     return Success.fromJson(jsonDecode(response.body));
   }
 
   Future<Success> volumeMute() async {
-    final Response response = await client.post(await sharedPref.readString('ip') + 'mute').timeout(Duration(seconds: 5));
+    final uri = new Uri.http(await sharedPref.readString('ip'), '/mute');
+    final Response response = await client.post(uri).timeout(Duration(seconds: 5));
 
     return Success.fromJson(jsonDecode(response.body));
   }
 
   Future<Success> proximaMusica() async {
-    final Response response = await client.get(await sharedPref.readString('ip') + 'proxima').timeout(Duration(seconds: 5));
+    final uri = new Uri.http(await sharedPref.readString('ip'), '/proxima');
+    final Response response = await client.get(uri).timeout(Duration(seconds: 5));
 
     return Success.fromJson(jsonDecode(response.body));
   }
 
   Future<Success> addCredito(qtd) async {
     final String qtdCreditos = jsonEncode({'QtdCredito': qtd});
-
-    final Response response = await client.post(await sharedPref.readString('ip') + 'credito',
+    final uri = new Uri.http(await sharedPref.readString('ip'), '/credito');
+    final Response response = await client.post(uri,
         headers: {'Content-type' : 'application/json'},
         body: qtdCreditos
     ).timeout(Duration(seconds: 5));

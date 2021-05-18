@@ -13,7 +13,8 @@ class DashboardWebClient {
   }
 
   Future<DadosDashboard> retornaDadosDashboard() async {
-    final Response response = await client.get(await sharedPref.readString('ip') + 'dashboard').timeout(Duration(seconds: 5));
+    final uri = new Uri.http(await sharedPref.readString('ip'), '/dashboard');
+    final Response response = await client.get(uri).timeout(Duration(seconds: 5));
 
     return DadosDashboard.fromJson(jsonDecode(response.body));
   }
